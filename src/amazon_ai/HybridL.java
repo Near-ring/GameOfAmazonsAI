@@ -17,24 +17,24 @@ public class HybridL extends IntelligentAgent {
         nextNode = new State();
     }
 
-    public void calculate(boolean is_op) {
+    public void calculate(boolean is_opponent) {
         if (currentNode.childStates == null)
             expand();
         else
-            stateSelect(is_op);
+            nodeSelection(is_opponent);
     }
 
-    public void stateSelect(boolean is_op) {
-        if (is_op == false){
+    public void nodeSelection(boolean is_opponent) {
+        if (is_opponent == false){
             double sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.value;
+                sum += s.value_p1;
             }
             double cvalue = sum * Math.random();
             State selectedState = null;
             sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.value;
+                sum += s.value_p1;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;
@@ -43,16 +43,16 @@ public class HybridL extends IntelligentAgent {
             nextNode = selectedState;
         }
 
-        if (is_op == true) {
+        if (is_opponent == true) {
             double sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.evalue;
+                sum += s.value_p2;
             }
             double cvalue = sum * Math.random();
             State selectedState = null;
             sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.evalue;
+                sum += s.value_p2;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;

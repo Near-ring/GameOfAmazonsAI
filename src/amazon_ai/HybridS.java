@@ -21,20 +21,20 @@ public class HybridS extends IntelligentAgent {
         if (currentNode.childStates == null)
             expand();
         else
-            stateSelect(is_op);
+            nodeSelection(is_op);
     }
 
-    public void stateSelect(boolean is_op) {
+    public void nodeSelection(boolean is_op) {
         if (is_op == false){
             double sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.value;
+                sum += s.value_p1;
             }
             double cvalue = sum * Math.random();
             State selectedState = null;
             sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.value;
+                sum += s.value_p1;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;
@@ -46,13 +46,13 @@ public class HybridS extends IntelligentAgent {
         if (is_op == true) {
             double sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.evalue;
+                sum += s.value_p2;
             }
             double cvalue = sum * Math.random();
             State selectedState = null;
             sum = 0;
             for (State s : currentNode.childStates) {
-                sum += s.evalue;
+                sum += s.value_p2;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;

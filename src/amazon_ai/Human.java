@@ -6,11 +6,10 @@ import java.util.Scanner;
 
 import amazon_framework.*;
 
-public class Human extends IntelligentAgent{
+public class Human extends IntelligentAgent {
     CoordinateArray actionList;
 
-    public Human (byte[][] board, byte side)
-    {
+    public Human(byte[][] board, byte side) {
         super(board, side);
         actionList = new CoordinateArray();
     }
@@ -18,9 +17,9 @@ public class Human extends IntelligentAgent{
     public void calculate() {
         Scanner inp = new Scanner(System.in);
         byte[][] cm = matrixCopy(gameBoard);
-        Coordinate src = new Coordinate(0,0);
-        Coordinate dst = new Coordinate(0,0);
-        Coordinate blk = new Coordinate(0,0);
+        Coordinate src = new Coordinate(0, 0);
+        Coordinate dst = new Coordinate(0, 0);
+        Coordinate blk = new Coordinate(0, 0);
         while (true) {
             printf("\ninput x,y to move:");
             src.x = inp.nextInt();
@@ -33,7 +32,7 @@ public class Human extends IntelligentAgent{
         actionList.add(src);
 
         byte[][] im = matrixCopy(cm);
-        markVaildMoves(im ,src);
+        markVaildMoves(im, src);
         displayBoard(im);
 
         while (true) {
@@ -49,14 +48,14 @@ public class Human extends IntelligentAgent{
         forceAction(cm, src, dst, MOVE);
 
         im = matrixCopy(cm);
-        markVaildMoves(im ,dst);
+        markVaildMoves(im, dst);
         displayBoard(im);
 
         while (true) {
             printf("\ninput block:");
             blk.x = inp.nextInt();
             blk.y = inp.nextInt();
-            CoordinateArray vms =  getValidMoves(cm, dst);
+            CoordinateArray vms = getValidMoves(cm, dst);
             if (vms.contains(blk))
                 break;
             printf("err\n");
@@ -64,6 +63,6 @@ public class Human extends IntelligentAgent{
         forceAction(cm, dst, blk, BLOCK);
         newState = matrixCopy(cm);
         actionList.add(blk);
-        //inp.close();
+        // inp.close();
     }
 }

@@ -2,7 +2,6 @@ package amazon_framework;
 
 import static amazon_framework.Operations.*;
 
-import java.util.Scanner;
 
 import amazon_ai.*;
 
@@ -62,16 +61,18 @@ public class Amazon {
 
     public void gameLoop() {
         Greedy player1 = new Greedy(getGameBoardClone(), BLACK);
-        HybridMarkov player2 = new HybridMarkov(getGameBoardClone(), WHITE);
+        HybridMCTS player2 = new HybridMCTS(getGameBoardClone(), WHITE);
+
         CoordinateArray action;
+        long startTime;
         int num = 0;
         while (true) {
-            // Player10
+            // Player1
             printf("\n  Turn: %d Player 1:\n\n", num);
             player1.update(getGameBoardClone());
-            long startTime = System.currentTimeMillis();
+            startTime = System.currentTimeMillis();
             player1.calculate();
-            System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+            System.out.println("\nTime taken: " + (System.currentTimeMillis() - startTime));
             action = player1.getAction();
             if (action.size() <= 0) {
                 printf("\nGAME END - Player2 wins!!!\n\n");
@@ -87,7 +88,7 @@ public class Amazon {
             player2.update(getGameBoardClone());
             startTime = System.currentTimeMillis();
             player2.calculate();
-            System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+            System.out.println("\nTime taken: " + (System.currentTimeMillis() - startTime));
             action = player2.getAction();
             if (action.size() <= 0) {
                 printf("\nGAME END - Player1 wins!!!\n\n");
@@ -96,6 +97,7 @@ public class Amazon {
             movePiece(action.at(0), action.at(1), MOVE);
             movePiece(action.at(1), action.at(2), BLOCK);
             printBoard();
+            System.gc();
         }
     }
 

@@ -50,7 +50,6 @@ public class CoordinateArray extends ArrayList<Coordinate> {
      */
     public CoordinateArray back(int n){
         CoordinateArray r = new CoordinateArray();
-        //n = n < 0 ? -n : n;
         int end = this.size() - n;
         end = end < 0 ? 0 : end;
         for (int i = this.size() - 1; i >= end; i--){
