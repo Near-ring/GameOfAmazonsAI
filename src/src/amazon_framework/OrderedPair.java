@@ -1,17 +1,15 @@
 package amazon_framework;
 
-import java.lang.Math;
-
-public class Coordinate {
+public final class OrderedPair {
     public int x;
     public int y;
 
-    public Coordinate(int a, int b) {
+    public OrderedPair(int a, int b) {
         x = a;
         y = b;
     }
 
-    public Coordinate() {
+    public OrderedPair() {
     }
 
     @Override
@@ -24,14 +22,11 @@ public class Coordinate {
         return str;
     }
 
-    public boolean equals(Coordinate p) {
-        if (p.x == this.x && p.y == this.y)
-            return true;
-        else
-            return false;
+    public boolean equals(OrderedPair p) {
+        return p.x == this.x && p.y == this.y;
     }
 
-    public double euclideanDist(Coordinate p) {
+    public double euclideanDist(OrderedPair p) {
         return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2));
     }
 

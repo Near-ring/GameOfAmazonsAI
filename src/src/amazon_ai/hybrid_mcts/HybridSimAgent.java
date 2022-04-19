@@ -1,40 +1,44 @@
-package amazon_ai;
+package amazon_ai.hybrid_mcts;
 
-import static amazon_framework.Operations.*;
+import amazon_framework.AbstractAIAgent;
+import amazon_framework.MatrixArray;
+import amazon_framework.OrderedPair;
+import amazon_framework.OrderedPairList;
 
 import java.util.Random;
 
-import amazon_framework.*;
+import static amazon_framework.Operations.*;
 
-public class HybridS extends IntelligentAgent {
-    State currentNode;
-    State nextNode;
+public final class HybridSimAgent extends AbstractAIAgent {
+    StateNode currentNode;
+    StateNode nextNode;
+    int num;
 
-    public HybridS(State inputState, byte side) {
+    HybridSimAgent(StateNode inputState, byte side) {
         super(inputState.mat, side);
         currentNode = inputState;
         currentNode.mat = inputState.mat;
-        nextNode = new State();
     }
 
-    public void calculate(boolean is_op) {
-        if (currentNode.childStates == null)
+    public void calculate(boolean is_opponent) {
+        if (currentNode.childStates == null) {
             expand();
-        else
-            nodeSelection(is_op);
+        } else {
+            nodeSelection(is_opponent);
+        }
     }
 
-    public void nodeSelection(boolean is_op) {
-        if (is_op == false){
+    public void nodeSelection(boolean opponent) {
+        if (!opponent) {
             double sum = 0;
-            for (State s : currentNode.childStates) {
-                sum += s.value_p1;
+            for (StateNode s : currentNode.childStates) {
+                sum += s.selfValue;
             }
             double cvalue = sum * Math.random();
-            State selectedState = null;
+            StateNode selectedState = null;
             sum = 0;
-            for (State s : currentNode.childStates) {
-                sum += s.value_p1;
+            for (StateNode s : currentNode.childStates) {
+                sum += s.selfValue;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;
@@ -43,16 +47,16 @@ public class HybridS extends IntelligentAgent {
             nextNode = selectedState;
         }
 
-        if (is_op == true) {
+        if (opponent) {
             double sum = 0;
-            for (State s : currentNode.childStates) {
-                sum += s.value_p2;
+            for (StateNode s : currentNode.childStates) {
+                sum += s.enemyValue;
             }
             double cvalue = sum * Math.random();
-            State selectedState = null;
+            StateNode selectedState = null;
             sum = 0;
-            for (State s : currentNode.childStates) {
-                sum += s.value_p2;
+            for (StateNode s : currentNode.childStates) {
+                sum += s.enemyValue;
                 if (sum >= cvalue) {
                     selectedState = s;
                     break;
@@ -64,17 +68,17 @@ public class HybridS extends IntelligentAgent {
 
     public void expand() {
         MatrixArray nextNodes = getPossibleStates(currentNode.mat, side);
-        CoordinateArray valueList = new CoordinateArray();
+        OrderedPairList valueList = new OrderedPairList();
         final int size_i = nextNodes.size();
         for (int i = 0; i < size_i; i++) {
-            Coordinate value = new Coordinate();
+            OrderedPair value = new OrderedPair();
             value.x = i;
             value.y += numPossibleMoves(nextNodes.at(i), side);
             value.y -= numPossibleMoves(nextNodes.at(i), enemy_side);
             valueList.add(value);
         }
         valueList.sort_by_y();
-        CoordinateArray betterList = valueList.back(11);
+        OrderedPairList betterList = valueList.back(32);
 
         if (betterList.isEmpty()) {
             nextNode = currentNode;
@@ -88,11 +92,11 @@ public class HybridS extends IntelligentAgent {
             marr.add(matrixCopy(nextNodes.at(index)));
         }
 
-        StateArray sarr = toStateArray(marr);
+        StateNodesArray sarr = new StateNodesArray(marr);
 
         currentNode.childStates = sarr;
 
-        for (State s : currentNode.childStates) {
+        for (StateNode s : currentNode.childStates) {
             s.parentState = currentNode;
         }
 
@@ -101,12 +105,12 @@ public class HybridS extends IntelligentAgent {
         nextNode = sarr.at(x);
     }
 
-    public void update(State s) {
+    public void update(StateNode s) {
         currentNode = s;
     }
 
     @Override
-    public CoordinateArray getAction(){
+    public OrderedPairList getAction() {
         return parseAction(currentNode.mat, nextNode.mat);
     }
 }

@@ -1,12 +1,15 @@
-package amazon_ai;
+package amazon_ai.greedy;
 
-import static amazon_framework.Operations.*;
+import amazon_framework.AbstractAIAgent;
+import amazon_framework.MatrixArray;
+import amazon_framework.OrderedPair;
+import amazon_framework.OrderedPairList;
 
 import java.util.Random;
 
-import amazon_framework.*;
+import static amazon_framework.Operations.*;
 
-public class Greedy extends IntelligentAgent {
+public class Greedy extends AbstractAIAgent {
 
     public Greedy(byte[][] board, byte side) {
         super(board, side);
@@ -16,17 +19,17 @@ public class Greedy extends IntelligentAgent {
     public void calculate() {
         Random rint = new Random();
         MatrixArray nextStates = getPossibleStates(gameBoard, side);
-        CoordinateArray valueList = new CoordinateArray();
+        OrderedPairList valueList = new OrderedPairList();
         int size = nextStates.size();
         for (int i = 0; i < size; i++) {
-            Coordinate value = new Coordinate(0, 0);
+            OrderedPair value = new OrderedPair(0, 0);
             value.y += numPossibleMoves(nextStates.at(i), side);
             value.y -= numPossibleMoves(nextStates.at(i), enemy_side);
             value.x = i;
             valueList.add(value);
         }
         valueList.sort_by_y();
-        CoordinateArray betterList = valueList.back(1);
+        OrderedPairList betterList = valueList.back(1);
         if (betterList.isEmpty()) {
             newState = matrixCopy(gameBoard);
             return;
